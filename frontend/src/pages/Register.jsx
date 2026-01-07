@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./../AuthPage.css";
 
 export default function Register() {
@@ -6,6 +7,8 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +28,7 @@ export default function Register() {
       const data = await response.json();
       if (response.ok) {
         alert(data.message);
-        window.location.href = "/login";
+        navigate("/login");
       } else {
         alert(data.message || "Registration failed");
       }
