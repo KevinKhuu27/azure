@@ -15,6 +15,12 @@ export default function GradeCalculator() {
     setRows([...rows, { description: "", grade: "", weight: "" }]);
   };
 
+  const removeRow = (indexToRemove) => {
+    // keep at least one row
+    if (rows.length === 1) return;
+    setRows(rows.filter((_, index) => index !== indexToRemove));
+  };
+
   const calculateAverage = () => {
     let totalWeightedScore = 0;
     let totalWeight = 0;
@@ -74,6 +80,13 @@ export default function GradeCalculator() {
               handleChange(index, "weight", e.target.value)
             }
           />
+          
+          <button
+            className="remove-btn"
+            onClick={() => removeRow(index)}
+          >
+            ✕
+          </button>
         </div>
       ))}
 
