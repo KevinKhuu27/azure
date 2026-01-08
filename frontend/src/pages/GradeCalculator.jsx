@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./../GradeCalculator.css";
+import "./../Calculator.css";
 
 export default function GradeCalculator() {
   const [rows, setRows] = useState([{ description: "", grade: "", weight: "" },]);
@@ -39,15 +39,15 @@ export default function GradeCalculator() {
   };
 
   return (
-    <div className="grade-container">
-      <div className="grade-header">
+    <div className="calculator-container">
+      <div className="calculator-header">
         <div>Description</div>
         <div>Grade (%)</div>
         <div>Weight (%)</div>
       </div>
 
       {rows.map((row, index) => (
-        <div className="grade-row" key={index}>
+        <div className="calculator-row" key={index}>
           <input
             type="text"
             placeholder="Assignment / Exam"
@@ -77,13 +77,13 @@ export default function GradeCalculator() {
         </div>
       ))}
 
-      <div className="grade-actions">
+      <div className="calculator-actions">
         <button onClick={addRow}>+ Add Row</button>
         <button onClick={calculateAverage}>Calculate</button>
       </div>
 
       {result && (
-        <div className="grade-result">
+        <div className="calculator-result">
           Final Grade: <strong>{result}%</strong>
         </div>
       )}

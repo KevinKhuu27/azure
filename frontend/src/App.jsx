@@ -4,6 +4,9 @@ import './App.css'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import GradeCalculator from './pages/GradeCalculator.jsx';
+import FinalGradeCalculator from './pages/FinalGradeCalculator.jsx';
+import CGPACalculator from './pages/CGPACalculator.jsx';
+import MainLayout from './layouts/MainLayout.jsx';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -13,7 +16,10 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/gradeCalculator" element={<GradeCalculator />} />
+      
+      <Route path="/gradeCalculator" element={<MainLayout><GradeCalculator /></MainLayout>} />
+      <Route path="/finalGradeCalculator" element={<MainLayout><FinalGradeCalculator /></MainLayout>} />
+      <Route path="/cgpaCalculator" element={<MainLayout><CGPACalculator /></MainLayout>} />
     </Routes>
   );
 }

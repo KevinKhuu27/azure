@@ -1,0 +1,82 @@
+.calculator-container {
+  max-width: 700px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  background-color: #141414;
+}
+
+.calculator-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.calculator-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.calculator-row input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid white;
+  background-color: #282828;
+  color: white;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.calculator-row input:hover {
+  border-color: #fff;
+  box-shadow: 0 0 0 1px #fff;
+}
+
+.calculator-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.calculator-actions button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.calculator-actions button:first-child {
+  color: white;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.calculator-actions button:first-child:hover {
+  background-color: #282828;
+}
+
+.calculator-actions button:last-child {
+  background: white;
+  color: #141414;
+  font-weight: 600;
+  transition: background-color 0.2s, color 0.2s;
+}
+.calculator-actions button:last-child:hover {
+  background-color: #3c3c3c;
+  color: white;
+}
+.calculator-actions button:first-child:hover {
+  background-color: #282828;
+}
+
+.calculator-result {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 1.2rem;
+  color: white;
+}
