@@ -21,7 +21,6 @@ export default function Login() {
 
       const data = await response.json();
       if (response.ok) {
-        alert(data.message);
         navigate("/gradeCalculator");
       } else {
         alert(data.message || "Login failed");
@@ -40,7 +39,7 @@ export default function Login() {
         <input
           className="auth-input"
           type="email"
-          placeholder="Your email"
+          placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
