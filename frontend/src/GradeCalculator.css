@@ -1,0 +1,49 @@
+.grade-calculator-columns-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 32px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.grade-calculator-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 32px;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.grade-calculator-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-right: 30px;
+}
+
+.grade-calculator-actions button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.grade-calculator-actions button:first-child {
+  color: white;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.grade-calculator-actions button:first-child:hover {
+  background-color: #282828;
+}
+
+.grade-calculator-actions button:last-child {
+  background: white;
+  color: #141414;
+  font-weight: 600;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.grade-calculator-actions button:last-child:hover {
+  background-color: #3c3c3c;
+  color: white;
+}

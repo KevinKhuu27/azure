@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import '../Calculator.css';
+import '../GPACalculator.css';
 
 export default function GPACalculator() {
     const [rows, setRows] = useState([{ description: "", grade: ""},]);
@@ -44,13 +45,13 @@ export default function GPACalculator() {
     return (
         <div className="calculator-container">
             <div className="calculator-header">GPA Calculator</div>
-            <div className="cgpa-calculator-columns-header">
+            <div className="gpa-calculator-columns-header">
                 <div>Course</div>
                 <div>Grade</div>
             </div>
 
             {rows.map((row, index) => (
-                <div className="cgpa-calculator-row" key={index}>
+                <div className="gpa-calculator-row" key={index}>
                     <input
                         type="text"
                         placeholder="e.g. CPS706"
@@ -78,7 +79,7 @@ export default function GPACalculator() {
                 </div>
             ))}
 
-            <div className="cgpa-calculator-actions">
+            <div className="gpa-calculator-actions">
                 <button onClick={addRow}>+ Add Row</button>
                 <button onClick={calculateAverage}>Calculate</button>
             </div>

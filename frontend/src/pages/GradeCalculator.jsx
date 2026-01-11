@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import "./../Calculator.css";
+import "../Calculator.css";
+import "../GradeCalculator.css";
 
 export default function GradeCalculator() {
   const [rows, setRows] = useState([{ description: "", grade: "", weight: "" },]);
@@ -91,7 +92,7 @@ export default function GradeCalculator() {
         </div>
       ))}
 
-      <div className="calculator-actions">
+      <div className="grade-calculator-actions">
         <button onClick={addRow}>+ Add Row</button>
         <button onClick={calculateAverage}>Calculate</button>
       </div>

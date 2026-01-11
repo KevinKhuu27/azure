@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../Calculator.css';
+import '../FinalGradeCalculator.css';
 
 export default function FinalGradeCalculator() {
     const [currentGrade, setCurrentGrade] = useState("");

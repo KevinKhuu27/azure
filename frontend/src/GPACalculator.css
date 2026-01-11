@@ -1,0 +1,50 @@
+.gpa-calculator-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-right: 28px;
+}
+
+.gpa-calculator-actions button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.gpa-calculator-actions button:first-child {
+  color: white;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.gpa-calculator-actions button:first-child:hover {
+  background-color: #282828;
+}
+
+.gpa-calculator-actions button:last-child {
+  background: white;
+  color: #141414;
+  font-weight: 600;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.gpa-calculator-actions button:last-child:hover {
+  background-color: #3c3c3c;
+  color: white;
+}
+
+.gpa-calculator-columns-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 16px;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.gpa-calculator-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 16px;
+  gap: 10px;
+  margin-bottom: 10px;
+}
