@@ -179,7 +179,7 @@ input:focus {
 
 .cgpa-calculator-columns-header {
   display: grid;
-  grid-template-columns: 1fr 1fr 32px;
+  grid-template-columns: 1fr 1fr 16px;
   gap: 10px;
   margin-top: 10px;
   margin-bottom: 10px;

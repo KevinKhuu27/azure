@@ -5,6 +5,7 @@ import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import GradeCalculator from './pages/GradeCalculator.jsx';
 import FinalGradeCalculator from './pages/FinalGradeCalculator.jsx';
+import GPACalculator from './pages/GPACalculator.jsx';
 import CGPACalculator from './pages/CGPACalculator.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
 
@@ -19,6 +20,7 @@ function App() {
       
       <Route path="/gradeCalculator" element={<MainLayout><GradeCalculator /></MainLayout>} />
       <Route path="/finalGradeCalculator" element={<MainLayout><FinalGradeCalculator /></MainLayout>} />
+      <Route path="/gpaCalculator" element={<MainLayout><GPACalculator /></MainLayout>} />
       <Route path="/cgpaCalculator" element={<MainLayout><CGPACalculator /></MainLayout>} />
     </Routes>
   );
