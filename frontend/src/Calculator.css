@@ -15,19 +15,17 @@
   color: white;
 }
 
-.calculator-header {
+.grade-calculator-columns-header {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 32px;
-  font-weight: bold;
   margin-top: 10px;
   margin-bottom: 10px;
   color: white;
 }
 
-.calculator-row {
+.grade-calculator-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 32px;
-  padding-right: 32px;
   gap: 10px;
   margin-bottom: 10px;
 }
@@ -42,7 +40,7 @@ input {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.calculator-row input:hover {
+input:focus {
   border-color: #fff;
   box-shadow: 0 0 0 1px #fff;
 }
@@ -56,10 +54,37 @@ input {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
-  padding-right: 32px;
+  padding-right: 30px;
 }
 
 .calculator-actions button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.final-calculator-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.final-calculator-actions button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.cgpa-calculator-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-right: 28px;
+}
+
+.cgpa-calculator-actions button {
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
@@ -87,8 +112,46 @@ input {
   color: white;
 }
 
-.calculator-actions button:first-child:hover {
+.final-calculator-actions button:first-child {
+  color: white;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.final-calculator-actions button:first-child:hover {
   background-color: #282828;
+}
+
+.final-calculator-actions button:last-child {
+  background: white;
+  color: #141414;
+  font-weight: 600;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.final-calculator-actions button:last-child:hover {
+  background-color: #3c3c3c;
+  color: white;
+}
+
+.cgpa-calculator-actions button:first-child {
+  color: white;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.cgpa-calculator-actions button:first-child:hover {
+  background-color: #282828;
+}
+
+.cgpa-calculator-actions button:last-child {
+  background: white;
+  color: #141414;
+  font-weight: 600;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.cgpa-calculator-actions button:last-child:hover {
+  background-color: #3c3c3c;
+  color: white;
 }
 
 .calculator-result {
@@ -98,19 +161,34 @@ input {
   color: white;
 }
 
-.final-calculator-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding-right: 32px;
-  gap: 10px;
-  margin-bottom: 10px;
-  align-items: center;
-}
-
-.final-calculator-header {
+.calculator-header {
   font-weight: bold;
   margin-top: 10px;
   margin-bottom: 10px;
   padding-bottom: 10px;
   color: white;
+}
+
+.final-calculator-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 10px;
+  align-items: center;
+  text-align: left;
+}
+
+.cgpa-calculator-columns-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 32px;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.cgpa-calculator-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 16px;
+  gap: 10px;
+  margin-bottom: 10px;
 }

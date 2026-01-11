@@ -28,7 +28,7 @@ export default function FinalGradeCalculator() {
 
     return (
         <div className="calculator-container">
-            <div className='final-calculator-header'>Final Grade Calculator</div>
+            <div className='calculator-header'>Final Grade Calculator</div>
 
             <div className='final-calculator-row'>
                 <div>Current Grade (%)</div>
@@ -45,7 +45,7 @@ export default function FinalGradeCalculator() {
                 <input type="text" value={finalExamWeight} onChange={(e) => setFinalExamWeight(e.target.value)} />
             </div>
 
-            <div className="calculator-actions">
+            <div className="final-calculator-actions">
                 <button onClick={clear}>× Reset </button>
                 <button onClick={calculateRequired}>Calculate</button>
             </div>

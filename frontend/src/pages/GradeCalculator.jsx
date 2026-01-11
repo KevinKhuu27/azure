@@ -46,17 +46,18 @@ export default function GradeCalculator() {
 
   return (
     <div className="calculator-container">
-      <div className="calculator-header">
+      <div className="calculator-header">Grade Calculator</div>
+      <div className="grade-calculator-columns-header">
         <div>Description</div>
         <div>Grade (%)</div>
         <div>Weight (%)</div>
       </div>
 
       {rows.map((row, index) => (
-        <div className="calculator-row" key={index}>
+        <div className="grade-calculator-row" key={index}>
           <input
             type="text"
-            placeholder="Assignment / Exam"
+            placeholder="e.g. Assignment 1"
             value={row.description}
             onChange={(e) =>
               handleChange(index, "description", e.target.value)
