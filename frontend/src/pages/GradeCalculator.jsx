@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../Calculator.css";
 import "../GradeCalculator.css";
 
 export default function GradeCalculator() {
   const [rows, setRows] = useState([{ description: "", grade: "", weight: "" },]);
   const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (index, field, value) => {
     const updatedRows = [...rows];
@@ -44,6 +45,82 @@ export default function GradeCalculator() {
     const average = totalWeightedScore / totalWeight;
     setResult(average.toFixed(2));
   };
+  
+  const save = async () => {
+    try {
+      setLoading(true);
+      const resp = await fetch('http://localhost:8080/grade-calculator/save-assignments', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          rows: rows.map(r => ({
+            assignmentID: r.assignmentID ?? null,
+            description: r.description,
+            grade: Number(r.grade),
+            weight: Number(r.weight),
+          })),
+        }),
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${resp.status}`);
+      }
+
+      const data = await resp.json();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadEntries = useCallback(async () => {
+    setLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+
+      const resp = await fetch("http://localhost:8080/grade-calculator/get-assignments", {
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+      const data = await resp.json();
+
+      const flatRows = (Array.isArray(data) ? data : []).map(r => ({
+        assignmentID: r.assignmentID ?? null,
+        description: r.description || "",
+        grade: String(r.grade ?? ""),
+        weight: String(r.weight ?? ""),
+      }));
+
+      if (flatRows.length > 0) {
+        setRows(flatRows);
+        setResult(null);
+      } else {
+        setRows([{ description: "", grade: "", weight: "" }]);
+        setResult(null);
+      }
+    } catch (e) {
+      console.error("Failed to load entries", e);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (cancelled) return;
+      await loadEntries();
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [loadEntries]);
 
   return (
     <div className="calculator-container">
@@ -85,6 +162,7 @@ export default function GradeCalculator() {
           
           <button
             className="remove-btn"
+            disabled={rows.length === 1}
             onClick={() => removeRow(index)}
           >
             ✕
@@ -95,6 +173,11 @@ export default function GradeCalculator() {
       <div className="grade-calculator-actions">
         <button onClick={addRow}>+ Add Row</button>
         <button onClick={calculateAverage}>Calculate</button>
+      </div>
+
+      <div className="calculator-actions">
+        <button onClick={save}>Save</button>
+        <button onClick={loadEntries}>Cancel</button>
       </div>
 
       {result && (

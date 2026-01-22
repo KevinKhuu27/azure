@@ -2,9 +2,9 @@ package kevink27.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 public class SecurityConfig {
@@ -12,10 +12,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(withDefaults()) // enable CORS using default configuration or your CorsConfigurationSource bean
-            .csrf(csrf -> csrf.disable()) // disable CSRF for simplicity in dev
+            // Make Spring Security use the CorsConfigurationSource bean
+            .cors(cors -> {})
+            .csrf(csrf -> csrf.disable()) // dev only for JSON + sessions; add proper CSRF in prod
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED)
+            )
             .authorizeHttpRequests(authz -> authz
-                .anyRequest().permitAll() // allow all requests for now
+                // Allow preflight (OPTIONS) to pass
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                // Allow all requests - we'll handle auth manually in each controller
+                .anyRequest().permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/controller/logout")     // Your frontend should POST to /controller/logout
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
             );
 
         return http.build();

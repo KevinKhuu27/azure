@@ -1,13 +1,22 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
+import { useAuth } from "../authentication/AuthContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
+  const { logout } = useAuth();
 
-  const handleLogout = () => {
-    // clear auth info
-    localStorage.removeItem("token"); // if using JWT
-    navigate("/login");
+  const handleLogout = async () => {
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      await logout();
+      navigate('/login', { replace: true });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

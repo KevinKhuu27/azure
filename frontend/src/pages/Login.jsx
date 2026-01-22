@@ -1,33 +1,31 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../authentication/AuthContext";
 import "./../AuthPage.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (submitting) return;
+    setSubmitting(true);
     try {
-      const response = await fetch("http://localhost:8080/controller/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        navigate("/gradeCalculator");
+      const { success, error } = await login(email, password);
+      if (success) {
+        navigate("/gradeCalculator", { replace: true });
       } else {
-        alert(data.message || "Login failed");
+        alert(error || "Login failed");
       }
     } catch (err) {
-      console.error(err);
       alert("Error connecting to server");
+    } finally {
+      setSubmitting(false);
     }
   };
 
