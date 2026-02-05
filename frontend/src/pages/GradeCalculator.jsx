@@ -182,7 +182,7 @@ export default function GradeCalculator() {
 
       {result && (
         <div className="calculator-result">
-          Final Grade: <strong>{result}%</strong>
+          Final Grade: <strong>{result}% ({(result/100*4.33).toFixed(2)}/4.33)</strong>
         </div>
       )}
     </div>

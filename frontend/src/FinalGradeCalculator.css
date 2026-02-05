@@ -14,6 +14,7 @@
 .final-calculator-actions button:first-child {
   color: white;
   transition: background-color 0.2s, color 0.2s;
+  background-color: #3c3c3c
 }
 
 .final-calculator-actions button:first-child:hover {
