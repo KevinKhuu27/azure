@@ -18,6 +18,7 @@
   justify-content: space-between;
   margin-top: 20px;
   padding-right: 30px;
+  font-weight: 600;
 }
 
 .grade-calculator-actions button {
@@ -25,6 +26,17 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.grade-calculator-actions button:last-child {
+  background: white;
+  color: #141414;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.grade-calculator-actions button:last-child:hover {
+  background-color: #282828;
+  color: white;
 }
 
 .grade-calculator-actions button:first-child {
@@ -35,16 +47,4 @@
 
 .grade-calculator-actions button:first-child:hover {
   background-color: #282828;
-}
-
-.grade-calculator-actions button:last-child {
-  background: white;
-  color: #141414;
-  font-weight: 600;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.grade-calculator-actions button:last-child:hover {
-  background-color: #282828;
-  color: white;
 }
