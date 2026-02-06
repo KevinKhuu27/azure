@@ -36,10 +36,25 @@ input:focus {
 }
 
 .calculator-result {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 1.2rem;
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+  text-align: left;
   color: white;
+}
+
+.calculator-result hr {
+  padding: 5px;
+}
+
+.calculator-result-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.calculator-result input {
+  margin-left: 8px;
+  height: 2rem;
 }
 
 .calculator-header {

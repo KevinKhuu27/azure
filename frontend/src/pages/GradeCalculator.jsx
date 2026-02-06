@@ -6,6 +6,7 @@ export default function GradeCalculator() {
   const [rows, setRows] = useState([{ description: "", grade: "", weight: "" },]);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [exportTarget, setExportTarget] = useState("");
 
   const handleChange = (index, field, value) => {
     const updatedRows = [...rows];
@@ -42,7 +43,7 @@ export default function GradeCalculator() {
       return;
     }
 
-    const average = totalWeightedScore / totalWeight;
+    const average = totalWeightedScore / totalWeight / 100 * 4.33;
     setResult(average.toFixed(2));
   };
   
@@ -110,6 +111,59 @@ export default function GradeCalculator() {
       setLoading(false);
     }
   }, []);
+
+  const exportToGPA = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      // Load existing GPA rows
+      const getResp = await fetch("http://localhost:8080/gpa-calculator/get-courses", {
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      if (!getResp.ok) throw new Error(`HTTP ${getResp.status}`);
+      const courses = await getResp.json();
+
+      // Merge new entry with existing ones
+      const existing = Array.isArray(courses)
+        ? courses.find(c => String(c.course).trim().toLowerCase() === exportTarget.toLowerCase())
+        : null;
+      const merged = Array.isArray(courses) ? [...courses] : [];
+      if (existing) {
+        existing.grade = result; // update in-place
+      } else {
+        merged.push({ courseID: null, course: exportTarget, grade: result });
+      }
+
+      // Send ALL rows
+      const payload = {
+        rows: merged.map(r => ({
+          courseID: r.courseID ?? null,
+          course: r.course,
+          grade: Number(r.grade),
+        })),
+      };
+
+      const putResp = await fetch("http://localhost:8080/gpa-calculator/save-courses", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+
+      if (!putResp.ok) {
+        const err = await putResp.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${putResp.status}`);
+      }
+
+      const data = await putResp.json();
+    } catch (e) {
+        console.error(e);
+    } finally {
+        setLoading(false);
+    }
+  }, [result, exportTarget]);
 
   useEffect(() => {
     let cancelled = false;
@@ -182,7 +236,24 @@ export default function GradeCalculator() {
 
       {result && (
         <div className="calculator-result">
-          Final Grade: <strong>{result}% ({(result/100*4.33).toFixed(2)}/4.33)</strong>
+          <hr />
+          <div className="calculator-result-header">Final Grade: <strong>{(result * 100 / 4.33).toFixed(2)}% ({result}/4.33)</strong></div>
+          <div className="export-section">
+            Export to GPA Calculator as:
+            <input
+              id="exportTarget"
+              type="text"
+              placeholder="e.g. CPS101"
+              value={exportTarget}
+              onChange={(e) => setExportTarget(e.target.value)}
+              disabled={loading}
+            />
+          </div>
+          <div className="grade-calculator-actions" style={{ marginTop: 20 }}>
+            <button onClick={exportToGPA} disabled={loading}>
+              {loading ? "Exporting..." : "Export"}
+            </button>
+          </div>
         </div>
       )}
     </div>
