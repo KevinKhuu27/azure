@@ -15,22 +15,22 @@
 .gpa-calculator-actions button:first-child {
   color: white;
   transition: background-color 0.2s, color 0.2s;
-  background-color: #3c3c3c
+  background-color: #BDCC97
 }
 
 .gpa-calculator-actions button:first-child:hover {
-  background-color: #282828;
+  background-color: #223E42;
 }
 
 .gpa-calculator-actions button:last-child {
-  background: white;
-  color: #141414;
+  background: #2B5D6E;
+  color: white;
   font-weight: 600;
   transition: background-color 0.2s, color 0.2s;
 }
 
 .gpa-calculator-actions button:last-child:hover {
-  background-color: #3c3c3c;
+  background-color: #223E42;
   color: white;
 }
 
