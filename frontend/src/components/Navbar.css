@@ -10,7 +10,7 @@
   align-items: center;
 
   padding: 0 32px;
-  background: #141414;
+  background: #3E613E;
   color: white;
   z-index: 1000;
 }
@@ -23,12 +23,12 @@
 }
 
 .nav-btn:hover {
-  background: #282828;
+  background: #223E42;
   color: white;
 }
 
 .nav-right button {
-  background: #141414;
+  background: #BDCC97;
   border: none;
   padding: 8px 14px;
   border-radius: 8px;
@@ -36,5 +36,9 @@
 }
 
 .nav-right button:hover {
-  background: #3c3c3c;
+  background: #223E42;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
 }
