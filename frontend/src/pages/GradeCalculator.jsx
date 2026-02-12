@@ -2,11 +2,17 @@ import React, { useState, useEffect, useCallback } from "react";
 import "../Calculator.css";
 import "../GradeCalculator.css";
 
-export default function GradeCalculator() {
+export default function GradeCalculator({ selectedCourse }) {
+  const [course, setCourse] = useState(selectedCourse);
   const [rows, setRows] = useState([{ description: "", grade: "", weight: "" },]);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [exportTarget, setExportTarget] = useState("");
+
+  // Update course when selectedCourse prop changes
+  useEffect(() => {
+    setCourse(selectedCourse);
+  }, [selectedCourse]);
 
   const handleChange = (index, field, value) => {
     const updatedRows = [...rows];
@@ -48,9 +54,14 @@ export default function GradeCalculator() {
   };
   
   const save = async () => {
+    if (!course) {
+      alert("Please select a course first");
+      return;
+    }
+
     try {
       setLoading(true);
-      const resp = await fetch('http://localhost:8080/grade-calculator/save-assignments', {
+      const resp = await fetch(`http://localhost:8080/grade-calculator/save-assignments/${course.courseID}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -78,11 +89,17 @@ export default function GradeCalculator() {
   };
 
   const loadEntries = useCallback(async () => {
+    if (!course) {
+      setRows([{ description: "", grade: "", weight: "" }]);
+      setResult(null);
+      return;
+    }
+
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 150));
 
-      const resp = await fetch("http://localhost:8080/grade-calculator/get-assignments", {
+      const resp = await fetch(`http://localhost:8080/grade-calculator/get-assignments-by-course/${course.courseID}`, {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
@@ -110,9 +127,14 @@ export default function GradeCalculator() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [course]);
 
   const exportToGPA = useCallback(async () => {
+    if (!course) {
+      alert("Please select a course first");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -165,6 +187,7 @@ export default function GradeCalculator() {
     }
   }, [result, exportTarget]);
 
+  // Load entries when course changes
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -174,7 +197,18 @@ export default function GradeCalculator() {
     return () => {
       cancelled = true;
     };
-  }, [loadEntries]);
+  }, [loadEntries, course]);
+
+  if (!course) {
+    return (
+      <div className="calculator-container">
+        <div className="calculator-header">Grade Calculator</div>
+        <div>
+          Select a course from the sidebar to view its assignments
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="calculator-container">
@@ -194,6 +228,7 @@ export default function GradeCalculator() {
             onChange={(e) =>
               handleChange(index, "description", e.target.value)
             }
+            disabled={loading}
           />
 
           <input
@@ -203,6 +238,7 @@ export default function GradeCalculator() {
             onChange={(e) =>
               handleChange(index, "grade", e.target.value)
             }
+            disabled={loading}
           />
 
           <input
@@ -212,11 +248,12 @@ export default function GradeCalculator() {
             onChange={(e) =>
               handleChange(index, "weight", e.target.value)
             }
+            disabled={loading}
           />
           
           <button
             className="remove-btn"
-            disabled={rows.length === 1}
+            disabled={rows.length === 1 || loading}
             onClick={() => removeRow(index)}
           >
             ✕

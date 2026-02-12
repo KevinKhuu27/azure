@@ -11,6 +11,7 @@
   max-width: 28rem;
   background-color: #92C75F;
   min-width: 480px;
+  justify-self: center;
 }
 
 .auth-title {
