@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import kevink27.backend.model.Course;
 import kevink27.backend.repository.CourseRepository;
 import kevink27.backend.repository.UserRepository;
+import kevink27.backend.repository.AssignmentRepository;
 
 @RestController
 @RequestMapping("/gpa-calculator")
@@ -15,10 +16,12 @@ public class GPACalculatorController {
 
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
+    private final AssignmentRepository assignmentRepository;
 
-    public GPACalculatorController(CourseRepository courseRepository, UserRepository userRepository) {
+    public GPACalculatorController(CourseRepository courseRepository, UserRepository userRepository, AssignmentRepository assignmentRepository) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
+        this.assignmentRepository = assignmentRepository;
     }
 
     @GetMapping("/get-courses")
@@ -92,6 +95,8 @@ public class GPACalculatorController {
         // Optional: delete rows removed in UI (enable if you want a true "sync")
         for (var a : existing) {
             if (!seenIds.contains(a.getCourseID())) {
+                // Delete dependent assignments first
+                assignmentRepository.deleteByCourseId(a.getCourseID());
                 courseRepository.delete(a);
             }
         }

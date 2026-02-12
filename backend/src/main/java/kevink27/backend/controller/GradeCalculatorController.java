@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import kevink27.backend.model.Assignment;
 import kevink27.backend.repository.AssignmentRepository;
+import kevink27.backend.repository.CourseRepository;
 import kevink27.backend.repository.UserRepository;
 
 @RestController
@@ -14,15 +15,17 @@ import kevink27.backend.repository.UserRepository;
 public class GradeCalculatorController {
 
     private final AssignmentRepository assignmentRepository;
+    private final CourseRepository courseRepository;
     private final UserRepository userRepository;
 
-    public GradeCalculatorController(AssignmentRepository assignmentRepository, UserRepository userRepository) {
+    public GradeCalculatorController(AssignmentRepository assignmentRepository, CourseRepository courseRepository, UserRepository userRepository) {
         this.assignmentRepository = assignmentRepository;
+        this.courseRepository = courseRepository;
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/get-assignments")
-    public ResponseEntity<?> getAssignments(HttpServletRequest req) {
+    @GetMapping("/get-assignments-by-course/{courseID}")
+    public ResponseEntity<?> getAssignments(@PathVariable Integer courseID, HttpServletRequest req) {
         // Check authentication
         var httpSession = req.getSession(false);        
         if (httpSession == null) {
@@ -33,7 +36,7 @@ public class GradeCalculatorController {
             return ResponseEntity.status(401).body("Not logged in");
         }
         
-        var list = assignmentRepository.findRecentByUserId(userID);
+        var list = assignmentRepository.findByCourseIdAndUserId(courseID, userID);
         var rows = list.stream().map(a -> new RowDto(
             a.getAssignmentID(),
             a.getDescription(),
@@ -44,9 +47,9 @@ public class GradeCalculatorController {
         return ResponseEntity.ok(rows);
     }
 
-    @PutMapping("/save-assignments")
+    @PutMapping("/save-assignments/{courseID}")
     @Transactional
-    public ResponseEntity<?> saveAssignments(@RequestBody RowsDto request, HttpServletRequest req) {
+    public ResponseEntity<?> saveAssignments(@PathVariable Integer courseID, @RequestBody RowsDto request, HttpServletRequest req) {
         // Check authentication
         var httpSession = req.getSession(false);
         if (httpSession == null) {
@@ -59,14 +62,17 @@ public class GradeCalculatorController {
 
         var user = userRepository.findById(userID.longValue())
             .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        var course = courseRepository.findById(courseID.longValue())
+            .orElseThrow(() -> new RuntimeException("Course not found"));
 
         var incoming = request.rows();
         if (incoming == null || incoming.isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("error", "rows must not be empty"));
         }
             
-        // Fetch existing assignments for this user
-        var existing = assignmentRepository.findRecentByUserId(userID);
+        // Fetch existing assignments for this course
+        var existing = assignmentRepository.findByCourseIdAndUserId(courseID, userID);
         var existingById = existing.stream()
             .collect(java.util.stream.Collectors.toMap(Assignment::getAssignmentID, a -> a));
 
@@ -85,7 +91,7 @@ public class GradeCalculatorController {
                 seenIds.add(id);
             } else {
                 // insert
-                var entity = new Assignment(null, user, r.description(), r.grade(), r.weight());
+                var entity = new Assignment(null, user, course, r.description(), r.grade(), r.weight());
                 entity = assignmentRepository.save(entity);
                 seenIds.add(entity.getAssignmentID());
             }
@@ -105,5 +111,4 @@ public class GradeCalculatorController {
 
     public record RowsDto(java.util.List<RowDto> rows) {}
     public record RowDto(Integer assignmentID, String description, Float grade, Integer weight) {}
-
 }

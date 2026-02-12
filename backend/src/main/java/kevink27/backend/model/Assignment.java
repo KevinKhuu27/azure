@@ -22,6 +22,14 @@ public class Assignment {
     )
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+        name = "courseID",
+        referencedColumnName = "courseID",
+        nullable = false
+    )
+    private Course course;
+
     @Column(nullable = false)
     private String description;
 
@@ -33,9 +41,10 @@ public class Assignment {
 
     public Assignment() {}
 
-    public Assignment(Integer assignmentID, User user, String description, float grade, int weight) {
+    public Assignment(Integer assignmentID, User user, Course course, String description, float grade, int weight) {
         this.assignmentID = assignmentID;
         this.user = user;
+        this.course = course;
         this.description = description;
         this.grade = grade;
         this.weight = weight;
