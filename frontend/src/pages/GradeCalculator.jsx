@@ -225,21 +225,27 @@ export default function GradeCalculator() {
       ))}
 
       <div className="grade-calculator-actions">
-        <button onClick={addRow}>+ Add Row</button>
-        <button onClick={calculateAverage}>Calculate</button>
-      </div>
-
-      <div className="calculator-actions">
-        <button onClick={save}>Save</button>
-        <button onClick={loadEntries}>Cancel</button>
+        <div className="add-row">
+          <button onClick={addRow}>+ Add Row</button>
+        </div>
+        <div className="action-buttons">
+          <div className="save-actions">
+            <button onClick={save}>Save</button>
+            <button onClick={loadEntries}>Cancel</button>
+          </div>
+          <div className="calculate-button">
+            <button onClick={calculateAverage}>Calculate</button>
+          </div>
+        </div>
       </div>
 
       {result && (
         <div className="calculator-result">
-          <hr />
-          <div className="calculator-result-header">Final Grade: <strong>{(result * 100 / 4.33).toFixed(2)}% ({result}/4.33)</strong></div>
+          <hr className="grade-calculator-hr"/>
+          <div className="calculator-result-header"><strong>{(result * 100 / 4.33).toFixed(2)}%</strong></div>
+          <div className="calculator-result-subheader">({result}/4.33)</div>
           <div className="export-section">
-            Export to GPA Calculator as:
+            Export to GPA as:
             <input
               id="exportTarget"
               type="text"
@@ -248,11 +254,11 @@ export default function GradeCalculator() {
               onChange={(e) => setExportTarget(e.target.value)}
               disabled={loading}
             />
-          </div>
-          <div className="grade-calculator-actions" style={{ marginTop: 20 }}>
-            <button onClick={exportToGPA} disabled={loading}>
-              {loading ? "Exporting..." : "Export"}
-            </button>
+            <div className="export-button">
+              <button onClick={exportToGPA} disabled={loading}>
+                {loading ? "Exporting..." : "Export"}
+              </button>
+            </div>
           </div>
         </div>
       )}

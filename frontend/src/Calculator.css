@@ -36,19 +36,23 @@ input:focus {
 
 .calculator-result {
   display: grid;
-  gap: 10px;
   margin-top: 10px;
   text-align: left;
   color: white;
 }
 
-.calculator-result hr {
-  padding: 5px;
+.calculator-result-header {
+  font-size: 3rem;
+  font-weight: 600;
+  justify-self: center;
+  padding-top: 32px;
 }
 
-.calculator-result-header {
+.calculator-result-subheader {
   font-size: 1.5rem;
   font-weight: 600;
+  justify-self: center;
+  padding-bottom: 32px;
 }
 
 .calculator-result input {
@@ -64,19 +68,95 @@ input:focus {
   color: white;
 }
 
-.calculator-actions {
-  display: flex;
-  margin-top: 32px;
+.add-row {
+  width: 100%;
 }
 
-.calculator-actions button {
-  padding: 8px 13px;
+.add-row button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  background-color: #BDCC97;
+}
+
+.add-row button:hover {
+  background-color: #223E42;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.actions-buttons button:hover {
+  background-color: #223E42;
+}
+
+.save-actions {
+  display: flex;
+}
+
+.save-actions button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
+  background-color: transparent;
 }
 
-.calculator-actions button:hover {
+.save-actions button:hover {
+  background-color: #223E42;
+}
+
+.export-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.export-section input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background-color: #E1E9E0;
+  color: #223E42;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  height: 100%;
+}
+
+.export-section input:focus {
+  border-color: #E1E9E0;
+  box-shadow: 0 0 0 1px #d1d5db;
+}
+
+.calculate-button {
+  background-color: #2B5D6E;
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.calculate-button:hover {
+  background-color: #223E42;
+}
+
+.export-button {
+  display: flex;
+  background-color: #2B5D6E;
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
+  margin-left: 12px;
+  padding: 10px 16px;
+}
+
+.export-button:hover {
   background-color: #223E42;
 }

@@ -25,14 +25,14 @@ export default function Navbar() {
         <button className="nav-btn" onClick={() => navigate("/gradeCalculator")}>
           Grade Calculator
         </button>
-        <button className="nav-btn" onClick={() => navigate("/finalGradeCalculator")}>
-          Final Grade Calculator
-        </button>
         <button className="nav-btn" onClick={() => navigate("/gpaCalculator")}>
           GPA Calculator
         </button>
         <button className="nav-btn" onClick={() => navigate("/cgpaCalculator")}>
           CGPA Calculator
+        </button>
+        <button className="nav-btn" onClick={() => navigate("/finalGradeCalculator")}>
+          Final Grade Calculator
         </button>
       </div>
 
