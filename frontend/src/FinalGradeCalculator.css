@@ -40,3 +40,7 @@
   align-items: center;
   text-align: left;
 }
+
+.calculator-result hr {
+  margin-top: 8px;
+}

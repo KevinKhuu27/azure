@@ -53,7 +53,10 @@ export default function FinalGradeCalculator() {
 
             {result && (
                 <div className="calculator-result">
-                Required Final Exam Grade: <strong>{result}%</strong>
+                    <hr />
+                    <div className="calculator-result-header">
+                        <strong>{result}%</strong>
+                    </div>
                 </div>
             )}
         </div>

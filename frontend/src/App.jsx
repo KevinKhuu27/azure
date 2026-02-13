@@ -18,10 +18,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
-        <Route path="/gradeCalculator" element={<ProtectedRoute><MainLayout><GradeCalculator /></MainLayout></ProtectedRoute>} />
-        <Route path="/finalGradeCalculator" element={<ProtectedRoute><MainLayout><FinalGradeCalculator /></MainLayout></ProtectedRoute>} />
-        <Route path="/gpaCalculator" element={<ProtectedRoute><MainLayout><GPACalculator /></MainLayout></ProtectedRoute>} />
-        <Route path="/cgpaCalculator" element={<ProtectedRoute><MainLayout><CGPACalculator /></MainLayout></ProtectedRoute>} />
+        <Route path="/gradeCalculator" element={<MainLayout><GradeCalculator /></MainLayout>} />
+        <Route path="/gpaCalculator" element={<MainLayout><GPACalculator /></MainLayout>} />
+        <Route path="/cgpaCalculator" element={<MainLayout><CGPACalculator /></MainLayout>} />
+        <Route path="/finalGradeCalculator" element={<MainLayout><FinalGradeCalculator /></MainLayout>} />
       </Routes>
     </AuthProvider>
   );

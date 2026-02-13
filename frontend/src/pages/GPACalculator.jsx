@@ -156,18 +156,26 @@ export default function GPACalculator() {
             ))}
 
             <div className="gpa-calculator-actions">
-                <button onClick={addRow}>+ Add Row</button>
-                <button onClick={calculateAverage}>Calculate</button>
-            </div>
-
-            <div className="calculator-actions">
-                <button onClick={save}>Save</button>
-                <button onClick={loadEntries}>Cancel</button>
+                <div className="add-row">
+                    <button onClick={addRow}>+ Add Row</button>
+                </div>
+                <div className="action-buttons">
+                    <div className="save-actions">
+                        <button onClick={save}>Save</button>
+                        <button onClick={loadEntries}>Cancel</button>
+                    </div>
+                    <div className="calculate-button">
+                        <button onClick={calculateAverage}>Calculate</button>
+                    </div>
+                </div>
             </div>
 
             {result && (
                 <div className="calculator-result">
-                    Final Grade: <strong>{result}</strong>
+                    <hr className="gpa-calculator-hr"/>
+                    <div className="calculator-result-header">
+                        <strong>{result}</strong>
+                    </div>
                 </div>
             )}
         </div>
