@@ -60,7 +60,7 @@ public class CGPACalculatorController {
             .orElseThrow(() -> new RuntimeException("User not found"));
 
         var incoming = request.rows();
-        if (incoming == null || incoming.isEmpty()) {
+        if (incoming == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "rows must not be empty"));
         }
             

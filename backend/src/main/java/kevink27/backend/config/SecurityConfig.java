@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .logoutUrl("/controller/logout")     // Your frontend should POST to /controller/logout
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("http://localhost:5173/login") // or your frontend login route
             );
 
         return http.build();
