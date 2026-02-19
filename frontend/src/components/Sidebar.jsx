@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import "./Sidebar.css";
 
-export default function Sidebar({ onSelect, collapsed, onToggleCollapsed }) {
+export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reloadKey }) {
     const [entities, setEntities] = useState([]);
     const [activeId, setActiveId] = useState(null);
     const [editingId, setEditingId] = useState(null);
@@ -36,7 +36,7 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed }) {
             }
         };
         loadCourses();
-    }, []);
+    }, [reloadKey]);
 
     useEffect(() => onSelect && onSelect(active), [active, onSelect]);
     useEffect(() => {
@@ -116,7 +116,10 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed }) {
             setActiveId((prev) => {
                 if (prev === courseID) {
                     return updatedCourses.length > 0 ? updatedCourses[0].courseID : null;
+                    // If no courses remain, set activeId to null
                 }
+                // If no courses remain at all, also set activeId to null
+                if (updatedCourses.length === 0) return null;
                 return prev;
             });
             if (editingId === courseID) setEditingId(null);

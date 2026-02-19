@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import '../Calculator.css';
 import '../GPACalculator.css';
 
-export default function GPACalculator() {
+export default function GPACalculator({ onSave }) {
     const [rows, setRows] = useState([{ course: "", grade: "" },]);
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -65,6 +65,7 @@ export default function GPACalculator() {
             }
 
             const data = await resp.json();
+            if (onSave) onSave();
         } catch (e) {
             console.error(e);
         } finally {

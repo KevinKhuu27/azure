@@ -6,6 +6,8 @@ import "./MainLayout.css";
 export default function MainLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [sidebarReloadKey, setSidebarReloadKey] = useState(0);
+  const reloadSidebar = () => setSidebarReloadKey((k) => k + 1);
 
   return (
     <>
@@ -15,9 +17,12 @@ export default function MainLayout({ children }) {
           collapsed={collapsed}
           onToggleCollapsed={() => setCollapsed((s) => !s)}
           onSelect={(course) => setSelectedCourse(course)}
+          reloadKey={sidebarReloadKey}
         />
         <main>
-          {React.isValidElement(children) ? React.cloneElement(children, { selectedCourse }) : children}
+          {React.isValidElement(children)
+            ? React.cloneElement(children, { selectedCourse, onSave: reloadSidebar })
+            : children}
         </main>
       </div>
     </>
