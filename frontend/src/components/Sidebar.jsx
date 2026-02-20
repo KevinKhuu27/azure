@@ -7,7 +7,6 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reload
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(true);
     const inputRef = useRef(null);
-    const [dragId, setDragId] = useState(null);
 
     const active = useMemo(
         () => entities.find((e) => e.courseID === activeId) ?? null,
@@ -164,44 +163,6 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reload
         }
     };
 
-    // Drag and drop
-    const onDragStart = (id) => setDragId(id);
-
-    const onDrop = async (overID) => {
-        if (!dragId || dragId === overID) return;
-
-        try {
-            const from = entities.findIndex((e) => e.courseID === dragId);
-            const to = entities.findIndex((e) => e.courseID === overID);
-            if (from < 0 || to < 0) return;
-
-            const copy = [...entities];
-            const [moved] = copy.splice(from, 1);
-            copy.splice(to, 0, moved);
-            
-            // Save to backend
-            const resp = await fetch("http://localhost:8080/gpa-calculator/save-courses", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({
-                    rows: copy.map(e => ({
-                        courseID: e.courseID,
-                        course: e.course,
-                        grade: e.grade || 0
-                    }))
-                }),
-            });
-
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            
-            setEntities(copy);
-        } catch (e) {
-            console.error("Failed to reorder courses", e);
-        }
-        setDragId(null);
-    };
-
     return (
         <aside className={`sidebar ${collapsed ? "sidebar-collapsed" : ""}`}>
             <div className="sidebar-top">
@@ -215,10 +176,6 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reload
                             <li
                                 key={e.courseID}
                                 className="entity"
-                                draggable
-                                onDragStart={() => onDragStart(e.courseID)}
-                                onDragOver={(ev) => ev.preventDefault()}
-                                onDrop={() => onDrop(e.courseID)}
                             >
                                 {editingId === e.courseID ? (
                                     <input
