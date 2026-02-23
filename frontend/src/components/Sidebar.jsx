@@ -1,13 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import "./Sidebar.css";
 
-export default function Sidebar({ onSelect, collapsed, onToggleCollapsed }) {
+export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reloadKey, onDataChanged }) {
     const [entities, setEntities] = useState([]);
     const [activeId, setActiveId] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(true);
     const inputRef = useRef(null);
-    const [dragId, setDragId] = useState(null);
 
     const active = useMemo(
         () => entities.find((e) => e.courseID === activeId) ?? null,
@@ -25,10 +24,12 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed }) {
                 });
                 if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                 const data = await resp.json();
-                setEntities(Array.isArray(data) ? data : []);
-                if (Array.isArray(data) && data.length > 0) {
-                    setActiveId(data[0].courseID);
-                }
+                const next = Array.isArray(data) ? data : [];
+                setEntities(next);
+                setActiveId((prev) => {
+                    if (!prev && next.length) return next[0].courseID; // first mount
+                    return next.some(e => e.courseID === prev) ? prev : (next[0]?.courseID ?? null);
+                });
             } catch (e) {
                 console.error("Failed to load courses", e);
             } finally {
@@ -36,7 +37,7 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed }) {
             }
         };
         loadCourses();
-    }, []);
+    }, [reloadKey]);
 
     useEffect(() => onSelect && onSelect(active), [active, onSelect]);
     useEffect(() => {
@@ -78,6 +79,7 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed }) {
             if (data.length > 0) {
                 setActiveId(data[data.length - 1].courseID);
             }
+            onDataChanged?.();
         } catch (e) {
             console.error("Failed to add course", e);
             alert("Failed to add course");
@@ -114,12 +116,12 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed }) {
 
             setEntities(updatedCourses);
             setActiveId((prev) => {
-                if (prev === courseID) {
-                    return updatedCourses.length > 0 ? updatedCourses[0].courseID : null;
-                }
+                if (updatedCourses.length === 0) return null;
+                if (prev === courseID) return updatedCourses[0].courseID;
                 return prev;
             });
             if (editingId === courseID) setEditingId(null);
+            onDataChanged?.();
         } catch (e) {
             console.error("Failed to delete course", e);
             alert(e.message || "Failed to delete course");
@@ -153,50 +155,13 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed }) {
             if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
             
             setEntities(updatedCourses);
+            onDataChanged?.();
         } catch (e) {
             console.error("Failed to rename course", e);
             alert("Failed to rename course");
         } finally {
             setLoading(false);
         }
-    };
-
-    // Drag and drop
-    const onDragStart = (id) => setDragId(id);
-
-    const onDrop = async (overID) => {
-        if (!dragId || dragId === overID) return;
-
-        try {
-            const from = entities.findIndex((e) => e.courseID === dragId);
-            const to = entities.findIndex((e) => e.courseID === overID);
-            if (from < 0 || to < 0) return;
-
-            const copy = [...entities];
-            const [moved] = copy.splice(from, 1);
-            copy.splice(to, 0, moved);
-            
-            // Save to backend
-            const resp = await fetch("http://localhost:8080/gpa-calculator/save-courses", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({
-                    rows: copy.map(e => ({
-                        courseID: e.courseID,
-                        course: e.course,
-                        grade: e.grade || 0
-                    }))
-                }),
-            });
-
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            
-            setEntities(copy);
-        } catch (e) {
-            console.error("Failed to reorder courses", e);
-        }
-        setDragId(null);
     };
 
     return (
@@ -212,10 +177,6 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed }) {
                             <li
                                 key={e.courseID}
                                 className="entity"
-                                draggable
-                                onDragStart={() => onDragStart(e.courseID)}
-                                onDragOver={(ev) => ev.preventDefault()}
-                                onDrop={() => onDrop(e.courseID)}
                             >
                                 {editingId === e.courseID ? (
                                     <input

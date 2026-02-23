@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import '../Calculator.css';
 import '../GPACalculator.css';
 
-export default function GPACalculator() {
+export default function GPACalculator({ onSave, reloadKey }) {
     const [rows, setRows] = useState([{ course: "", grade: "" },]);
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -63,8 +63,7 @@ export default function GPACalculator() {
                 const err = await resp.json().catch(() => ({}));
                 throw new Error(err.error || `HTTP ${resp.status}`);
             }
-
-            const data = await resp.json();
+            onSave?.();
         } catch (e) {
             console.error(e);
         } finally {
@@ -75,8 +74,6 @@ export default function GPACalculator() {
     const loadEntries = useCallback(async () => {
         setLoading(true);
         try {
-            await new Promise((resolve) => setTimeout(resolve, 150));
-
             const resp = await fetch("http://localhost:8080/gpa-calculator/get-courses", {
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -94,11 +91,10 @@ export default function GPACalculator() {
 
             if (flatRows.length > 0) {
                 setRows(flatRows);
-                setResult(null);
             } else {
                 setRows([{ course: "", grade: "" }]);
-                setResult(null);
             }
+            setResult(null);
         } catch (e) {
             console.error("Failed to load entries", e);
         } finally {
@@ -115,7 +111,7 @@ export default function GPACalculator() {
         return () => {
             cancelled = true;
         };
-    }, [loadEntries]);
+    }, [loadEntries, reloadKey]);
 
     return (
         <div className="calculator-container">
