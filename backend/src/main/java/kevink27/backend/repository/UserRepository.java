@@ -5,4 +5,5 @@ import kevink27.backend.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmailAndPassword(String email, String password);
+    User findByUserID(Integer userID);
 }

@@ -6,7 +6,7 @@ import { useAuth } from "../authentication/AuthContext";
 export default function Navbar() {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const handleLogout = async () => {
     if (submitting) return;
@@ -37,7 +37,14 @@ export default function Navbar() {
       </div>
 
       <div className="nav-right">
-        <button onClick={handleLogout}>Sign Out</button>
+        { user ? (
+          <div className="user-info">
+            <span className="nav-username">Hello, <strong>{user.username}</strong>!</span>
+            <button onClick={handleLogout}>Sign Out</button>
+          </div>
+        ) : (
+          <button className="nav-btn" onClick={() => navigate("/login")} >Login</button>
+        )}
       </div>
     </nav>
   );

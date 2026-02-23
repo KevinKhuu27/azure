@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -76,5 +75,21 @@ public class Controller {
 
         Integer userID = (Integer) session.getAttribute("userID");
         return ResponseEntity.ok("Logged in as user " + userID);
+    }
+
+    @GetMapping("/get-user")
+    public ResponseEntity<?> getUser(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("userID") == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+        }
+
+        Integer userID = (Integer) session.getAttribute("userID");
+        User user = userRepository.findByUserID(userID);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        return ResponseEntity.ok(user);
     }
 }
