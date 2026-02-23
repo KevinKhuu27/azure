@@ -49,7 +49,7 @@ export default function GradeCalculator({ selectedCourse }) {
       return;
     }
 
-    const average = totalWeightedScore / totalWeight / 100 * 4.33;
+    const average = totalWeightedScore / totalWeight;
     setResult(average.toFixed(2));
   };
   
@@ -152,9 +152,9 @@ export default function GradeCalculator({ selectedCourse }) {
         : null;
       const merged = Array.isArray(courses) ? [...courses] : [];
       if (existing) {
-        existing.grade = result; // update in-place
+        existing.grade = (result / 100 * 4.33).toFixed(2); // update in-place
       } else {
-        merged.push({ courseID: null, course: exportTarget, grade: result });
+        merged.push({ courseID: null, course: exportTarget, grade: (result / 100 * 4.33).toFixed(2) });
       }
 
       // Send ALL rows
@@ -279,8 +279,8 @@ export default function GradeCalculator({ selectedCourse }) {
       {result && (
         <div className="calculator-result">
           <hr className="grade-calculator-hr"/>
-          <div className="calculator-result-header"><strong>{(result * 100 / 4.33).toFixed(2)}%</strong></div>
-          <div className="calculator-result-subheader">({result}/4.33)</div>
+          <div className="calculator-result-header"><strong>{result}%</strong></div>
+          <div className="calculator-result-subheader">({(result / 100 * 4.33).toFixed(2)}/4.33)</div>
           <div className="export-section">
             Export to GPA as:
             <input
