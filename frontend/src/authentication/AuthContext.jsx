@@ -5,6 +5,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   // Check session on app load
   useEffect(() => {
@@ -17,9 +18,11 @@ export function AuthProvider({ children }) {
         });
 
         setIsAuthenticated(response.ok);
+        await fetchUser(); // Fetch user profile if session is valid
       } catch (err) {
         console.error("Session check failed:", err);
         setIsAuthenticated(false);
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -41,6 +44,7 @@ export function AuthProvider({ children }) {
         // Wait a moment for session to be established
         await new Promise(resolve => setTimeout(resolve, 100));
         setIsAuthenticated(true);
+        await fetchUser(); // Fetch user profile after login
         console.log("Login successful, authenticated state set to true");
         return { success: true };
       } else {
@@ -65,11 +69,31 @@ export function AuthProvider({ children }) {
       console.error("Logout error:", err);
     } finally {
       setIsAuthenticated(false);
+      setUser(null);
+    }
+  };
+
+  // fetch the current user profile
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("http://localhost:8080/controller/get-user", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to fetch user");
+      const data = await res.json();
+      setUser(data); // Expecting { id, name, email, ... }
+      return data;
+    } catch (err) {
+      console.error("Fetching user failed:", err);
+      setUser(null);
+      return null;
     }
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, loading, login, logout, user, fetchUser }}>
       {children}
     </AuthContext.Provider>
   );
