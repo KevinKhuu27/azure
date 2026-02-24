@@ -9,6 +9,8 @@ export default function GradeCalculator({ selectedCourse }) {
   const [loading, setLoading] = useState(false);
   const [exportTarget, setExportTarget] = useState("");
 
+  const API_BASE = import.meta.env.VITE_API_URL;
+
   // Update course when selectedCourse prop changes
   useEffect(() => {
     setCourse(selectedCourse);
@@ -61,7 +63,7 @@ export default function GradeCalculator({ selectedCourse }) {
 
     try {
       setLoading(true);
-      const resp = await fetch(`http://localhost:8080/grade-calculator/save-assignments/${course.courseID}`, {
+      const resp = await fetch(`${API_BASE}/grade-calculator/save-assignments/${course.courseID}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -99,7 +101,7 @@ export default function GradeCalculator({ selectedCourse }) {
     try {
       await new Promise((resolve) => setTimeout(resolve, 150));
 
-      const resp = await fetch(`http://localhost:8080/grade-calculator/get-assignments-by-course/${course.courseID}`, {
+      const resp = await fetch(`${API_BASE}/grade-calculator/get-assignments-by-course/${course.courseID}`, {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
@@ -139,7 +141,7 @@ export default function GradeCalculator({ selectedCourse }) {
       setLoading(true);
 
       // Load existing GPA rows
-      const getResp = await fetch("http://localhost:8080/gpa-calculator/get-courses", {
+      const getResp = await fetch(`${API_BASE}/gpa-calculator/get-courses`, {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
@@ -166,7 +168,7 @@ export default function GradeCalculator({ selectedCourse }) {
         })),
       };
 
-      const putResp = await fetch("http://localhost:8080/gpa-calculator/save-courses", {
+      const putResp = await fetch(`${API_BASE}/gpa-calculator/save-courses`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

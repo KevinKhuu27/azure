@@ -197,5 +197,3 @@ build/
 ### VS Code ###
 .vscode/
 *.code-workspace
-
-*.properties

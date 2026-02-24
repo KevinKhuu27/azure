@@ -10,6 +10,8 @@ export default function Register() {
 
   const navigate = useNavigate();
 
+  const API_BASE = import.meta.env.VITE_API_URL;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -18,7 +20,7 @@ export default function Register() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/controller/register", {
+      const response = await fetch(`${API_BASE}/controller/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),

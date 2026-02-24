@@ -1,0 +1,44 @@
+name: Build & Deploy Spring Boot (Azure App Service)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+      - 'pom.xml'
+      - '**/*.java'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build with Maven
+        working-directory: ./backend
+        run: mvn -B -DskipTests clean package
+
+      - name: List artifacts for debugging
+        run: |
+          echo "Root:"
+          ls -al
+          echo "./backend:"
+          ls -al ./backend || true
+          echo "./backend/target:"
+          ls -al ./backend/target || true
+
+      - name: Deploy to Azure Web App (Java SE)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: KevinK27-azureProject
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          package: backend/target/*.jar

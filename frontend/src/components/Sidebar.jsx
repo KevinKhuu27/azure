@@ -8,6 +8,8 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reload
     const [loading, setLoading] = useState(true);
     const inputRef = useRef(null);
 
+    const API_BASE = import.meta.env.VITE_API_URL;
+    
     const active = useMemo(
         () => entities.find((e) => e.courseID === activeId) ?? null,
         [entities, activeId]
@@ -18,7 +20,7 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reload
         const loadCourses = async () => {
             try {
                 setLoading(true);
-                const resp = await fetch("http://localhost:8080/gpa-calculator/get-courses", {
+                const resp = await fetch(`${API_BASE}/gpa-calculator/get-courses`, {
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",
                 });
@@ -52,7 +54,7 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reload
 
         try {
             setLoading(true);
-            const resp = await fetch("http://localhost:8080/gpa-calculator/save-courses", {
+            const resp = await fetch(`${API_BASE}/gpa-calculator/save-courses`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -67,7 +69,7 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reload
             if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
             // Reload courses
-            const getResp = await fetch("http://localhost:8080/gpa-calculator/get-courses", {
+            const getResp = await fetch(`${API_BASE}/gpa-calculator/get-courses`, {
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
             });
@@ -96,7 +98,7 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reload
             setLoading(true);
             const updatedCourses = entities.filter((e) => e.courseID !== courseID);
             
-            const resp = await fetch("http://localhost:8080/gpa-calculator/save-courses", {
+            const resp = await fetch(`${API_BASE}/gpa-calculator/save-courses`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -139,7 +141,7 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reload
                 e.courseID === courseID ? { ...e, course: newName } : e
             );
             
-            const resp = await fetch("http://localhost:8080/gpa-calculator/save-courses", {
+            const resp = await fetch(`${API_BASE}/gpa-calculator/save-courses`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

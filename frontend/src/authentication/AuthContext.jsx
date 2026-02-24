@@ -7,11 +7,13 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
+  const API_BASE = import.meta.env.VITE_API_URL;
+
   // Check session on app load
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await fetch("http://localhost:8080/controller/check-session", {
+        const response = await fetch(`${API_BASE}/controller/check-session`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -33,7 +35,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch("http://localhost:8080/controller/login", {
+      const response = await fetch(`${API_BASE}/controller/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -60,7 +62,7 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await fetch("http://localhost:8080/controller/logout", {
+      await fetch(`${API_BASE}/controller/logout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -76,7 +78,7 @@ export function AuthProvider({ children }) {
   // fetch the current user profile
   const fetchUser = async () => {
     try {
-      const res = await fetch("http://localhost:8080/controller/get-user", {
+      const res = await fetch(`${API_BASE}/controller/get-user`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

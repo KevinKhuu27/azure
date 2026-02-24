@@ -7,6 +7,8 @@ export default function GPACalculator({ onSave, reloadKey }) {
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    const API_BASE = import.meta.env.VITE_API_URL;
+
     const handleChange = (index, field, value) => {
         const updatedRows = [...rows];
         updatedRows[index][field] = value;
@@ -46,7 +48,7 @@ export default function GPACalculator({ onSave, reloadKey }) {
     const save = async () => {
         try {
             setLoading(true);
-            const resp = await fetch('http://localhost:8080/gpa-calculator/save-courses', {
+            const resp = await fetch(`${API_BASE}/gpa-calculator/save-courses`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -74,7 +76,7 @@ export default function GPACalculator({ onSave, reloadKey }) {
     const loadEntries = useCallback(async () => {
         setLoading(true);
         try {
-            const resp = await fetch("http://localhost:8080/gpa-calculator/get-courses", {
+            const resp = await fetch(`${API_BASE}/gpa-calculator/get-courses`, {
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
             });

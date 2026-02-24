@@ -6,6 +6,8 @@ export default function CGPACalculator() {
     const [rows, setRows] = useState([{ semester: "", grade: ""},]);
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const API_BASE = import.meta.env.VITE_API_URL;
     
     const handleChange = (index, field, value) => {
         const updatedRows = [...rows];
@@ -46,7 +48,7 @@ export default function CGPACalculator() {
     const save = async () => {
         try {
             setLoading(true);
-            const resp = await fetch('http://localhost:8080/cgpa-calculator/save-semesters', {
+            const resp = await fetch(`${API_BASE}/cgpa-calculator/save-semesters`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -77,7 +79,7 @@ export default function CGPACalculator() {
         try {
             await new Promise((resolve) => setTimeout(resolve, 150));
 
-            const resp = await fetch("http://localhost:8080/cgpa-calculator/get-semesters", {
+            const resp = await fetch(`${API_BASE}/cgpa-calculator/get-semesters`, {
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
             });
