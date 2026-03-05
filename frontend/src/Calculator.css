@@ -53,7 +53,6 @@ input:focus {
   font-size: 1.5rem;
   font-weight: 600;
   justify-self: center;
-  padding-bottom: 32px;
 }
 
 .calculator-result input {
@@ -119,6 +118,7 @@ input:focus {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 32px;
 }
 
 .export-section input {
@@ -130,6 +130,7 @@ input:focus {
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   height: 100%;
+  width: 150px;
 }
 
 .export-section input:focus {

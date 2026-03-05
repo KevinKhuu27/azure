@@ -19,7 +19,7 @@
   gap: 16px;
   font-weight: 600;
   align-items: center;
-  padding-right: 26px;
+  padding-right: 42px;
 }
 
 .grade-calculator-actions button {
@@ -32,5 +32,5 @@
 
 .grade-calculator-hr {
   margin-top: 8px;
-  margin-right: 26px;
+  margin-right: 42px;
 }
