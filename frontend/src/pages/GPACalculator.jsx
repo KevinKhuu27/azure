@@ -6,6 +6,7 @@ export default function GPACalculator({ onSave, reloadKey }) {
     const [rows, setRows] = useState([{ course: "", grade: "" },]);
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [exportTarget, setExportTarget] = useState("");
 
     const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -104,6 +105,59 @@ export default function GPACalculator({ onSave, reloadKey }) {
         }
     }, []);
 
+    const exportToGPA = useCallback(async () => {
+        try {
+            setLoading(true);
+
+            // Load existing GPA rows
+            const getResp = await fetch(`${API_BASE}/cgpa-calculator/get-semesters`, {
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+            });
+            if (!getResp.ok) throw new Error(`HTTP ${getResp.status}`);
+            const semesters = await getResp.json();
+
+            // Merge new entry with existing ones
+            const existing = Array.isArray(semesters)
+                ? semesters.find(s => String(s.semester).trim().toLowerCase() === exportTarget.toLowerCase())
+                : null;
+            const merged = Array.isArray(semesters) ? [...semesters] : [];
+            if (existing) {
+                existing.grade = result; // update in-place
+            } else {
+                merged.push({ semesterID: null, semester: exportTarget, grade: result });
+            }
+
+            // Send ALL rows
+            const payload = {
+                rows: merged.map(r => ({
+                    semesterID: r.semesterID ?? null,
+                    semester: r.semester,
+                    grade: Number(r.grade),
+                })),
+            };
+
+            const putResp = await fetch(`${API_BASE}/cgpa-calculator/save-semesters`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify(payload),
+            });
+
+
+            if (!putResp.ok) {
+                const err = await putResp.json().catch(() => ({}));
+                throw new Error(err.error || `HTTP ${putResp.status}`);
+            }
+
+            const data = await putResp.json();
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    }, [result, exportTarget]);
+      
     useEffect(() => {
         let cancelled = false;
         (async () => {
@@ -171,8 +225,22 @@ export default function GPACalculator({ onSave, reloadKey }) {
             {result && (
                 <div className="calculator-result">
                     <hr className="gpa-calculator-hr"/>
-                    <div className="calculator-result-header">
-                        <strong>{result}</strong>
+                    <div className="calculator-result-header"><strong>{result}/4.33</strong></div>
+                    <div className="export-section">
+                        Export to CGPA as:
+                        <input
+                            id="exportTarget"
+                            type="text"
+                            placeholder="e.g. F2025"
+                            value={exportTarget}
+                            onChange={(e) => setExportTarget(e.target.value)}
+                            disabled={loading}
+                        />
+                        <div className="export-button">
+                            <button onClick={exportToGPA} disabled={loading}>
+                                {loading ? "Exporting..." : "Export"}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
