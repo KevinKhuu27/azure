@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import "./Sidebar.css";
 
-export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reloadKey, onDataChanged }) {
+export default function Sidebar({ onCourseSelect, collapsed, onToggleCollapsed, reloadKey, onDataChanged }) {
     const [entities, setEntities] = useState([]);
     const [activeId, setActiveId] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [semesterTarget, setSemesterTarget] = useState("");
     const inputRef = useRef(null);
 
     const API_BASE = import.meta.env.VITE_API_URL;
@@ -41,7 +42,7 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reload
         loadCourses();
     }, [reloadKey]);
 
-    useEffect(() => onSelect && onSelect(active), [active, onSelect]);
+    useEffect(() => onCourseSelect && onCourseSelect(active), [active, onCourseSelect]);
     useEffect(() => {
         if (editingId && inputRef.current) {
             inputRef.current.focus();
@@ -169,9 +170,20 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reload
     return (
         <aside className={`sidebar ${collapsed ? "sidebar-collapsed" : ""}`}>
             <div className="sidebar-top">
-                <button className="add-entity-button hide-when-collapsed" onClick={addEntity} disabled={loading}>+ New</button>
+                <div className="add-entity">
+                    <button className="add-entity-button hide-when-collapsed" onClick={addEntity} disabled={loading}>+</button> 
+                    <input
+                        className="add-entity-semester-input hide-when-collapsed"
+                        id="semesterTarget"
+                        type="text"
+                        placeholder="e.g. W2026"
+                        value={semesterTarget}
+                        onChange={(e) => setSemesterTarget(e.target.value)}
+                    />
+                </div>
                 <button className="expand-button" onClick={onToggleCollapsed}>{collapsed ? ">" : "<"}</button>
             </div>
+            <hr />
             <nav className="sidebar-content hide-when-collapsed">
                 <div className="sidebar-content-inner">
                     <ul id="entitiesList" className="entities">
@@ -198,7 +210,7 @@ export default function Sidebar({ onSelect, collapsed, onToggleCollapsed, reload
                                     />
                                     ) : (
                                     // alternates between button and input
-                                    <button className={`entity-button ${e.courseID === activeId ? "active" : ""}`} onClick={() => { setActiveId(e.courseID); onSelect && onSelect(e); }} disabled={loading}>{e.course} </button>
+                                    <button className={`entity-button ${e.courseID === activeId ? "active" : ""}`} onClick={() => { setActiveId(e.courseID); onCourseSelect && onCourseSelect(e); }} disabled={loading}>{e.course} </button>
                                 )}
 
                                 <div className="entity-actions">

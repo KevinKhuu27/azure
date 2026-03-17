@@ -1,6 +1,6 @@
 .sidebar {
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto auto 1fr auto;
     height: 100%;
     width: 100%;
     background-color: #92C75F;
@@ -10,7 +10,7 @@
         0 4px 4px rgba(0, 0, 0, 0.08),
         0 8px 8px rgba(0, 0, 0, 0.08),
         0 16px 16px rgba(0, 0, 0, 0.08);
-    gap: 16px;
+    gap: 8px;
     position: relative;
     overflow: hidden;
 }
@@ -160,15 +160,29 @@
     background: #223E42;
 }
 
+.add-entity {
+    display: flex;
+    align-items: center;
+}
+
 .add-entity-button {
     background: #BDCC97;
     color: #fff;
-    width: 128px;
+    width: 40px;
     border-radius: 8px;
     height: 40px;
-    font-weight: 600;
+    font-weight: 900;
 }
 
 .add-entity-button:hover {
     background: #223E42;
+}
+
+.add-entity-semester-input {
+    width: 120px;
+    margin-left: 4px;
+}
+
+hr {
+    margin: -8px;
 }

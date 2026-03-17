@@ -169,9 +169,12 @@ export default function Sidebar({ onSemesterSelect, collapsed, onToggleCollapsed
     return (
         <aside className={`sidebar ${collapsed ? "sidebar-collapsed" : ""}`}>
             <div className="sidebar-top">
-                <button className="add-entity-button hide-when-collapsed" onClick={addEntity} disabled={loading}>+ New</button>
-                <button className="expand-button" onClick={onToggleCollapsed}>{collapsed ? ">" : "<"}</button>
+                <div>
+                    <button className="add-entity-button hide-when-collapsed" onClick={addEntity} disabled={loading}>+</button>
+                    <button className="expand-button" onClick={onToggleCollapsed}>{collapsed ? ">" : "<"}</button>
+                </div>
             </div>
+            <hr />
             <nav className="sidebar-content hide-when-collapsed">
                 <div className="sidebar-content-inner">
                     <ul id="entitiesList" className="entities">
