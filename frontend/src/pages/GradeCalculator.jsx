@@ -7,7 +7,8 @@ export default function GradeCalculator({ selectedCourse }) {
   const [rows, setRows] = useState([{ description: "", grade: "", weight: "" },]);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [exportTarget, setExportTarget] = useState("");
+  const [exportCourse, setExportCourse] = useState("");
+  const [exportSemester, setExportSemester] = useState("");
 
   const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -150,17 +151,18 @@ export default function GradeCalculator({ selectedCourse }) {
 
       // Merge new entry with existing ones
       const existing = Array.isArray(courses)
-        ? courses.find(c => String(c.course).trim().toLowerCase() === exportTarget.toLowerCase())
+        ? courses.find(c => String(c.course).trim().toLowerCase() === exportCourse.toLowerCase())
         : null;
       const merged = Array.isArray(courses) ? [...courses] : [];
       if (existing) {
         existing.grade = (result / 100 * 4.33).toFixed(2); // update in-place
       } else {
-        merged.push({ courseID: null, course: exportTarget, grade: (result / 100 * 4.33).toFixed(2) });
+        merged.push({ courseID: null, course: exportCourse, grade: (result / 100 * 4.33).toFixed(2) });
       }
 
       // Send ALL rows
       const payload = {
+        semesterName: exportSemester,
         rows: merged.map(r => ({
           courseID: r.courseID ?? null,
           course: r.course,
@@ -175,7 +177,6 @@ export default function GradeCalculator({ selectedCourse }) {
         body: JSON.stringify(payload),
       });
 
-
       if (!putResp.ok) {
         const err = await putResp.json().catch(() => ({}));
         throw new Error(err.error || `HTTP ${putResp.status}`);
@@ -187,7 +188,7 @@ export default function GradeCalculator({ selectedCourse }) {
     } finally {
         setLoading(false);
     }
-  }, [result, exportTarget]);
+  }, [result, exportCourse, exportSemester]);
 
   // Load entries when course changes
   useEffect(() => {
@@ -284,13 +285,22 @@ export default function GradeCalculator({ selectedCourse }) {
           <div className="calculator-result-header"><strong>{result}%</strong></div>
           <div className="calculator-result-subheader">({(result / 100 * 4.33).toFixed(2)}/4.33)</div>
           <div className="export-section">
-            Export to GPA as:
+            <span>Export to GPA as</span>
             <input
-              id="exportTarget"
+              id="exportCourse"
               type="text"
               placeholder="e.g. CPS101"
-              value={exportTarget}
-              onChange={(e) => setExportTarget(e.target.value)}
+              value={exportCourse}
+              onChange={(e) => setExportCourse(e.target.value)}
+              disabled={loading}
+            />
+            <span>in semester</span>
+            <input
+              id="exportSemester"
+              type="text"
+              placeholder="e.g. F2025"
+              value={exportSemester}
+              onChange={(e) => setExportSemester(e.target.value)}
               disabled={loading}
             />
             <div className="export-button">

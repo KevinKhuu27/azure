@@ -22,6 +22,14 @@ public class Course {
     )
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(
+        name = "semesterID",
+        referencedColumnName = "semesterID",
+        nullable = true
+    )
+    private Semester semester;
+
     @Column(nullable = false)
     private String course;
 
@@ -30,9 +38,10 @@ public class Course {
 
     public Course() {}
 
-    public Course(Integer courseID, User user, String course, float grade) {
+    public Course(Integer courseID, User user, Semester semester, String course, float grade) {
         this.courseID = courseID;
         this.user = user;
+        this.semester = semester;
         this.course = course;
         this.grade = grade;
     }

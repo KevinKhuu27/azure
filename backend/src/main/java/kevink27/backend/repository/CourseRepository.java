@@ -11,5 +11,7 @@ import kevink27.backend.model.Course;
 public interface CourseRepository extends JpaRepository<Course, Long> {
   @Query("select a from Course a where a.user.id = :userID order by a.courseID desc")
   List<Course> findRecentByUserId(@Param("userID") Integer userID);
+
+  List<Course> findBySemesterSemesterID(Integer semesterID);
 }
 

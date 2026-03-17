@@ -2,7 +2,6 @@ package kevink27.backend.controller;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,6 @@ public class Controller {
 
     private final UserRepository userRepository;
 
-    @Autowired
     public Controller(UserRepository userRepository) {
         this.userRepository = userRepository;
     }

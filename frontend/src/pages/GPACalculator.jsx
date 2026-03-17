@@ -2,13 +2,14 @@ import React, { useState, useEffect, useCallback } from "react";
 import '../Calculator.css';
 import '../GPACalculator.css';
 
-export default function GPACalculator({ onSave, reloadKey }) {
+export default function GPACalculator({ selectedSemester, onSave, reloadKey }) {
     const [rows, setRows] = useState([{ course: "", grade: "" },]);
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [exportTarget, setExportTarget] = useState("");
 
     const API_BASE = import.meta.env.VITE_API_URL;
+    const semester = selectedSemester;
 
     const handleChange = (index, field, value) => {
         const updatedRows = [...rows];
@@ -54,6 +55,7 @@ export default function GPACalculator({ onSave, reloadKey }) {
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify({
+                    semesterID: semester.semesterID,
                     rows: rows.map(r => ({
                         courseID: r.courseID ?? null,
                         course: r.course,
@@ -77,7 +79,7 @@ export default function GPACalculator({ onSave, reloadKey }) {
     const loadEntries = useCallback(async () => {
         setLoading(true);
         try {
-            const resp = await fetch(`${API_BASE}/gpa-calculator/get-courses`, {
+            const resp = await fetch(`${API_BASE}/gpa-calculator/get-courses/${semester.semesterID}`, {
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
             });
@@ -103,7 +105,7 @@ export default function GPACalculator({ onSave, reloadKey }) {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [semester, API_BASE]);
 
     const exportToGPA = useCallback(async () => {
         try {
@@ -159,15 +161,20 @@ export default function GPACalculator({ onSave, reloadKey }) {
     }, [result, exportTarget]);
       
     useEffect(() => {
-        let cancelled = false;
-        (async () => {
-            if (cancelled) return;
-            await loadEntries();
-        })();
-        return () => {
-            cancelled = true;
-        };
-    }, [loadEntries, reloadKey]);
+        if (!semester) return;
+        loadEntries();
+    }, [loadEntries, reloadKey, semester]);
+
+    if (!semester) {
+        return (
+        <div className="calculator-container">
+            <div className="calculator-header">GPA Calculator</div>
+            <div>
+            Select a semester from the sidebar to view its courses
+            </div>
+        </div>
+        );
+    }
 
     return (
         <div className="calculator-container">

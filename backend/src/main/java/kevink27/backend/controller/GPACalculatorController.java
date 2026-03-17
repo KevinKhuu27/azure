@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import kevink27.backend.model.Course;
+import kevink27.backend.model.Semester;
 import kevink27.backend.repository.CourseRepository;
 import kevink27.backend.repository.UserRepository;
 import kevink27.backend.repository.AssignmentRepository;
+import kevink27.backend.repository.SemesterRepository;
 
 @RestController
 @RequestMapping("/gpa-calculator")
@@ -17,11 +19,35 @@ public class GPACalculatorController {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final AssignmentRepository assignmentRepository;
+    private final SemesterRepository semesterRepository;
 
-    public GPACalculatorController(CourseRepository courseRepository, UserRepository userRepository, AssignmentRepository assignmentRepository) {
+    public GPACalculatorController(CourseRepository courseRepository, UserRepository userRepository, AssignmentRepository assignmentRepository, SemesterRepository semesterRepository) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.assignmentRepository = assignmentRepository;
+        this.semesterRepository = semesterRepository;
+    }
+
+    @GetMapping("/get-courses/{semesterID}")
+    public ResponseEntity<?> getCourses(@PathVariable Integer semesterID, HttpServletRequest req) {
+        // Check authentication
+        var httpSession = req.getSession(false);        
+        if (httpSession == null) {
+            return ResponseEntity.status(401).body("Not logged in");
+        }
+        Integer userID = (Integer) httpSession.getAttribute("userID");
+        if (userID == null) {
+            return ResponseEntity.status(401).body("Not logged in");
+        }
+        
+        var list = courseRepository.findBySemesterSemesterID(semesterID);
+        var rows = list.stream().map(a -> new RowDto(
+            a.getCourseID(),
+            a.getCourse(),
+            a.getGrade()
+        )).toList();
+
+        return ResponseEntity.ok(rows);
     }
 
     @GetMapping("/get-courses")
@@ -75,6 +101,11 @@ public class GPACalculatorController {
         // Track ids that remain after update to detect deletions
         var seenIds = new java.util.HashSet<Integer>();
 
+        Semester semester = null;
+        if (request.semesterName() != null) {
+            semester = semesterRepository.findBySemester(request.semesterName());
+        }
+
         // Upsert
         for (var r : incoming) {
             Integer id = r.courseID();
@@ -84,9 +115,12 @@ public class GPACalculatorController {
                 entity.setCourse(r.course());
                 entity.setGrade(r.grade());
                 seenIds.add(id);
+                if (semester != null) {
+                    entity.setSemester(semester);
+                }
             } else {
                 // insert
-                var entity = new Course(null, user, r.course(), r.grade());
+                var entity = new Course(null, user, semester, r.course(), r.grade());
                 entity = courseRepository.save(entity);
                 seenIds.add(entity.getCourseID());
             }
@@ -106,7 +140,7 @@ public class GPACalculatorController {
         ));
     }
 
-    public record RowsDto(java.util.List<RowDto> rows) {}
+    public record RowsDto(String semesterName, java.util.List<RowDto> rows) {}
     public record RowDto(Integer courseID, String course, Float grade) {}
 
 }

@@ -56,7 +56,6 @@ input:focus {
 }
 
 .calculator-result input {
-  margin-left: 8px;
   height: 2rem;
 }
 
@@ -119,10 +118,10 @@ input:focus {
   justify-content: center;
   align-items: center;
   padding-top: 32px;
+  gap: 8px;
 }
 
 .export-section input {
-  padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid transparent;
   background-color: #E1E9E0;
@@ -130,7 +129,7 @@ input:focus {
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   height: 100%;
-  width: 150px;
+  width: 120px;
 }
 
 .export-section input:focus {
