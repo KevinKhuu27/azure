@@ -9,6 +9,7 @@ import kevink27.backend.model.Course;
 import kevink27.backend.repository.CourseRepository;
 import kevink27.backend.repository.UserRepository;
 import kevink27.backend.repository.AssignmentRepository;
+import kevink27.backend.repository.SemesterRepository;
 
 @RestController
 @RequestMapping("/gpa-calculator")
@@ -17,11 +18,35 @@ public class GPACalculatorController {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final AssignmentRepository assignmentRepository;
+    private final SemesterRepository semesterRepository;
 
-    public GPACalculatorController(CourseRepository courseRepository, UserRepository userRepository, AssignmentRepository assignmentRepository) {
+    public GPACalculatorController(CourseRepository courseRepository, UserRepository userRepository, AssignmentRepository assignmentRepository, SemesterRepository semesterRepository) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.assignmentRepository = assignmentRepository;
+        this.semesterRepository = semesterRepository;
+    }
+
+    @GetMapping("/get-courses/{semesterID}")
+    public ResponseEntity<?> getCourses(@PathVariable Integer semesterID, HttpServletRequest req) {
+        // Check authentication
+        var httpSession = req.getSession(false);        
+        if (httpSession == null) {
+            return ResponseEntity.status(401).body("Not logged in");
+        }
+        Integer userID = (Integer) httpSession.getAttribute("userID");
+        if (userID == null) {
+            return ResponseEntity.status(401).body("Not logged in");
+        }
+        
+        var list = courseRepository.findBySemesterSemesterID(semesterID);
+        var rows = list.stream().map(a -> new RowDto(
+            a.getCourseID(),
+            a.getCourse(),
+            a.getGrade()
+        )).toList();
+
+        return ResponseEntity.ok(rows);
     }
 
     @GetMapping("/get-courses")
@@ -62,6 +87,11 @@ public class GPACalculatorController {
         var user = userRepository.findById(userID.longValue())
             .orElseThrow(() -> new RuntimeException("User not found"));
 
+        var semester = semesterRepository.findBySemesterID(request.semesterID());
+        if (semester == null) {
+            return ResponseEntity.status(404).body("Semester not found");
+        }
+
         var incoming = request.rows();
         if (incoming == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "rows must not be empty"));
@@ -86,7 +116,7 @@ public class GPACalculatorController {
                 seenIds.add(id);
             } else {
                 // insert
-                var entity = new Course(null, user, r.course(), r.grade());
+                var entity = new Course(null, user, semester, r.course(), r.grade());
                 entity = courseRepository.save(entity);
                 seenIds.add(entity.getCourseID());
             }
@@ -106,7 +136,7 @@ public class GPACalculatorController {
         ));
     }
 
-    public record RowsDto(java.util.List<RowDto> rows) {}
+    public record RowsDto(Integer semesterID, java.util.List<RowDto> rows) {}
     public record RowDto(Integer courseID, String course, Float grade) {}
 
 }

@@ -11,5 +11,7 @@ import kevink27.backend.model.Semester;
 public interface SemesterRepository extends JpaRepository<Semester, Long> {
   @Query("select a from Semester a where a.user.id = :userID order by a.semesterID desc")
   List<Semester> findRecentByUserId(@Param("userID") Integer userID);
+
+  Semester findBySemesterID(Integer semesterID);
 }
 
