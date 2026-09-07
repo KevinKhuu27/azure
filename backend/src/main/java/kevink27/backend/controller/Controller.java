@@ -92,4 +92,10 @@ public class Controller {
 
         return ResponseEntity.ok(user);
     }
+    
+    @GetMapping("/health")
+    public ResponseEntity<?> health() {
+        long userCount = userRepository.count();
+        return ResponseEntity.ok(Map.of("status", "up", "users", userCount));
+    }
 }
