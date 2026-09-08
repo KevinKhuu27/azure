@@ -19,7 +19,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         
         <Route path="/gradeCalculator" element={<MainLayout showSidebar={true}><GradeCalculator /></MainLayout>} />
-        <Route path="/gpaCalculator" element={<MainLayout showSidebar={true}><GPACalculator /></MainLayout>} />
+        <Route path="/gpaCalculator" element={<MainLayout><GPACalculator /></MainLayout>} />
         <Route path="/cgpaCalculator" element={<MainLayout><CGPACalculator /></MainLayout>} />
         <Route path="/finalGradeCalculator" element={<MainLayout><FinalGradeCalculator /></MainLayout>} />
       </Routes>
